@@ -8,13 +8,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.sabiha.internettesting.MainActivity">
+    tools:context="com.example.sabiha.internettesting.MainActivity"
+    android:background="@drawable/background"
+    >
 
     <Button android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/clickButton"
-        android:text="Test Internet"
+        android:text="Test Internet Connection"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        />
+        android:background="@drawable/custom_style"
+        android:textColor="@android:color/white"
+        android:padding="15dp"
+        android:fontFamily="sans-serif-medium" />
 </RelativeLayout>
