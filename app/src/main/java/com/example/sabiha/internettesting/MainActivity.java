@@ -1,77 +1,61 @@
 package com.example.sabiha.internettesting;
 
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.net.InetAddress;
 
 public class MainActivity extends AppCompatActivity {
 
-    boolean internetConnection = false;
+    String TAG = "";
+    Button button;
+    com.example.sabiha.internettesting.ConnectivityManager myCM;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
-        NetworkInfo nf = cm.getActiveNetworkInfo();
-        if(nf.isConnected())
-        {
-            Toast.makeText(this, "Connected with " + nf.getExtraInfo() + " network", Toast.LENGTH_LONG).show();
-        }
-        else {
-            Toast.makeText(this, "No network connection is available", Toast.LENGTH_LONG).show();
-        }
+        TAG = MainActivity.class.getSimpleName();
+        myCM = new com.example.sabiha.internettesting.ConnectivityManager(this);
+        button = (Button) findViewById(R.id.clickButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "Inside Main Activity Class");
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
+                myCM.connectionCheck(cm.getActiveNetworkInfo());
+            }
+        });
 
-        checkInternetConnection ci = new checkInternetConnection();
-        ci.execute();
+        /*BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+            }
+        };*/
+        /*IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        this.registerReceiver(new NetworkStateListener(), intentFilter);*/
     }
 
-    private class checkInternetConnection extends AsyncTask<Void, Void, Void>
-    {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                InetAddress ia = InetAddress.getByName("www.google.com");
-                InetAddress ia1 = InetAddress.getByName("www.amazon.com");
-                InetAddress ia2 = InetAddress.getByName("www.facebook.com");
-                internetConnection = !ia.equals("") || !ia1.equals("") || !ia2.equals("");
-                Log.e("Testing", "Connection: " + internetConnection);
-            }
-            catch(Exception e)
-            {
-                Log.e("Testing", e.toString());
-                internetConnection = false;
-            }
-            finally {
-                createNotification();
-            }
-            return null;
-        }
-    }
-
-    private void createNotification()
-    {
-        Resources res = this.getResources();
-        int notificationID = 1;
-        NotificationCompat.Builder ncBuilder = new NotificationCompat.Builder(MainActivity.this);
-        ncBuilder.setAutoCancel(true)
-            .setContentTitle(res.getString(R.string.internet_connection_title))
-            .setContentText(internetConnection ? res.getString(R.string.internet_connection_true)
-                    : res.getString(R.string.internet_connection_false))
-            .setSmallIcon(R.drawable.ic_network_check_white_24dp);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationID, ncBuilder.build());
+    @Override
+    protected void onDestroy() {
+        myCM = null;
+        super.onDestroy();
     }
 
     /*public static boolean isConnected(Context context) {
