@@ -30,16 +30,20 @@ public final class ConnectivityManager {
 
     public void connectionCheck(NetworkInfo networkInfo)
     {
-        if(networkInfo.isConnectedOrConnecting())
-        {
-            networkMessage = "Connected with " + networkInfo.getExtraInfo() + " network";
-            checkInternetConnection ci = new checkInternetConnection();
-            ci.execute();
+        if(networkInfo != null) {
+            if (networkInfo.isConnectedOrConnecting()) {
+                networkMessage = "Connected with " + networkInfo.getExtraInfo() + " network";
+                checkInternetConnection ci = new checkInternetConnection();
+                ci.execute();
+            } else {
+                Log.e(TAG, "No network is available");
+                networkMessage = "No network is available";
+                createNotification();
+            }
         }
         else
         {
-            Log.e(TAG, "No Network is available");
-            networkMessage = "No Network is available";
+            networkMessage = "Network information is not available";
             createNotification();
         }
     }

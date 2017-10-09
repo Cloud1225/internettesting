@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "Inside Main Activity Class");
                 ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
                 myCM.connectionCheck(cm.getActiveNetworkInfo());
+                Toast.makeText(MainActivity.this, "A notification will be sent", Toast.LENGTH_LONG).show();
             }
         });
 
